@@ -16,7 +16,7 @@ La razón de ser autocontenido es que GitHub Pages sirve el archivo tal cual y e
 
 1. **Día al azar** – botón que arma una combinación (un almuerzo, una merienda, una cena) mostrando ingredientes, gramos y el total de macros del día. Estado solo en memoria, sin `localStorage` ni persistencia de ningún tipo. Debe respetar la restricción de combinación descrita en `nutricion.md`.
 2. **Almuerzo** – 6 opciones
-3. **Merienda** – 4 opciones
+3. **Merienda** – 3 opciones
 4. **Cena** – 3 opciones
 5. **Intercambios** – tablas de reemplazo directo
 6. **Cómo usarlo** – reglas de uso, horarios, registro

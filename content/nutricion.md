@@ -66,16 +66,17 @@ La papa al horno en bastones en vez de frita es el único cambio respecto al ori
 
 Sin aceite: la pavita molida ya trae unos 22 g de grasa.
 
-### 4 · Lentejas con pollo – 750 kcal · P 59 · C 82 · G 16
+### 4 · Lentejas con pollo – 750 kcal · P 59 · C 81 · G 17
 
 | Alimento | Cantidad |
 |---|---|
-| Lentejas | 400 g cocidas · 160 g crudas |
-| Pollo, pechuga | 125 g crudo |
+| Lentejas | 175 g cocidas · 70 g crudas |
+| Arroz | 150 g cocido · 50 g crudo |
+| Pollo, pechuga | 190 g crudo |
 | Palta | 70 g |
 | Ensalada de 2 colores | libre |
 
-Las lentejas aportan 30 g de proteína por sí solas, por eso lleva la mitad de pollo. La más barata y la que mejor aguanta 2–3 días en refrigeradora.
+Con más arroz (150 g) las lentejas bajan más — de 300 a 175 g cocidas — para no pasarse de carbohidrato, y el pollo sube a 190 g para cubrir la proteína que ambas dejan de aportar. Sigue quedando cerca del objetivo original (750 kcal, P 59). La más barata del grupo y la que mejor aguanta 2–3 días en refrigeradora.
 
 ### 5 · Arroz con arvejas y pollo – 770 kcal · P 57 · C 102 · G 12
 
@@ -116,18 +117,7 @@ Sin arroz: los garbanzos cubren todo el carbohidrato. Rinde para 2 días.
 
 Los 250 g cocidos salen de unos 55 g de avena en hojuelas con agua hirviendo.
 
-### 2 · Yogurt con avena y nueces – 515 kcal · P 37 · C 60 · G 14
-
-| Alimento | Cantidad |
-|---|---|
-| Yogurt griego sin azúcar | 250 g |
-| Avena | 250 g cocida · 55 g cruda |
-| Nueces | 15 g |
-| Arándanos u otra fruta | 100 g |
-
-Se deja armada la noche anterior.
-
-### 3 · Rapiditas con pollo – 450 kcal · P 33 · C 42 · G 15
+### 2 · Rapiditas con pollo – 450 kcal · P 33 · C 42 · G 15
 
 | Alimento | Cantidad |
 |---|---|
@@ -138,7 +128,7 @@ Se deja armada la noche anterior.
 
 Opción salada y portátil.
 
-### 4 · Sándwich de huevo – 455 kcal · P 29 · C 47 · G 16
+### 3 · Sándwich de huevo – 455 kcal · P 29 · C 47 · G 16
 
 | Alimento | Cantidad |
 |---|---|
@@ -148,7 +138,7 @@ Opción salada y portátil.
 | Palta | 30 g |
 | Fruta | 150 g |
 
-La merienda con menos proteína del grupo. Si el almuerzo fue de legumbres, conviene usar la 1 o la 2.
+La merienda con menos proteína del grupo. Si el almuerzo fue de legumbres, conviene usar la 1.
 
 **Días de box:** quitar el maní, las nueces o la palta de la merienda y subir 80 g al carbohidrato. Grasa alta una hora antes de la clase cae mal.
 
@@ -165,7 +155,7 @@ La merienda con menos proteína del grupo. Si el almuerzo fue de legumbres, conv
 | Aceite de oliva | 5 g |
 | Ensalada grande | libre |
 
-La más liviana y la de mayor volumen. Si 400 g de papa pesan mucho a las 9 pm, cambiar por 300 g de arroz. El equivalente crudo asume papa sancochada, no al horno.
+La más liviana y la de mayor volumen. Si 400 g de papa pesan mucho a las 9 pm, cambiar por 300 g de arroz. El equivalente crudo (444 g) asume papa sancochada, no al horno — y sí, el crudo pesa más que el cocido: al revés que el arroz, que absorbe agua y triplica su peso al cocer, la papa pierde agua al hervirla y queda ~10% más liviana. No está invertido.
 
 ### 2 · Salteado de pollo – 720 kcal · P 62 · C 90 · G 11
 
@@ -192,7 +182,7 @@ Dos hamburguesas de 125 g, armadas crudas y guardadas en refrigeradora. Se cocin
 
 ## Combinaciones
 
-Cualquier almuerzo con cualquier merienda y cualquier cena: **72 combinaciones**.
+Cualquier almuerzo con cualquier merienda y cualquier cena: **54 combinaciones**.
 
 **Restricción única:** no combinar el chaufa de pavita (almuerzo 3) con las hamburguesas de pavita (cena 3) el mismo día. Las dos son de carne molida y juntas dejan el día en 44 g de grasa, por encima de lo previsto. El generador aleatorio debe evitar esta pareja.
 
