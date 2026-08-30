@@ -1,0 +1,956 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plan nutricional</title>
+<meta name="description" content="Plan de alimentación personal: almuerzos, meriendas, cenas e intercambios.">
+<meta name="theme-color" content="#171b21">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Nutrición">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #14181e;
+    --bg-elev: #1a2028;
+    --card: #1e2530;
+    --card-border: #2b3340;
+    --card-border-soft: #262d38;
+    --text: #e8ebef;
+    --text-dim: #9aa5b4;
+    --text-faint: #6c7686;
+    --amber: #e2984a;
+    --amber-soft: #e2984a26;
+    --amber-line: #e2984a55;
+    --slate: #7fa0be;
+    --rust: #b3705a;
+    --focus: #f0b064;
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --radius-sm: 6px;
+    --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-display: 'Space Grotesk', var(--font-sans);
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --maxw: 720px;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ background: var(--bg); }
+  body{
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 3rem;
+  }
+
+  a{ color: var(--amber); }
+
+  h1, h2, h3{
+    font-family: var(--font-display);
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .mono{ font-family: var(--font-mono); }
+
+  :focus{ outline: none; }
+  :focus-visible{
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* ---------- layout shell ---------- */
+
+  .shell{
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  header.top{
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: linear-gradient(var(--bg) 88%, transparent);
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .top-inner{
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 0.9rem 1rem 0.6rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .brand{
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .brand-mark{
+    width: 22px;
+    height: 22px;
+    flex: none;
+    display: grid;
+    gap: 3px;
+    align-content: center;
+  }
+  .brand-mark span{
+    display: block;
+    height: 3px;
+    border-radius: 2px;
+  }
+  .brand-mark span:nth-child(1){ width: 62%; background: var(--slate); }
+  .brand-mark span:nth-child(2){ width: 100%; background: var(--amber); }
+  .brand-mark span:nth-child(3){ width: 40%; background: var(--rust); }
+
+  .brand-name{
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  .target-readout{
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+  .target-readout b{
+    color: var(--amber);
+    font-weight: 600;
+  }
+
+  /* ---------- tabs ---------- */
+
+  nav.tabs{
+    display: flex;
+    gap: 0.35rem;
+    overflow-x: auto;
+    padding: 0 1rem 0.7rem;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    border-bottom: 1px solid var(--card-border-soft);
+  }
+  nav.tabs::-webkit-scrollbar{ display: none; }
+
+  .tab{
+    flex: none;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.83rem;
+    color: var(--text-dim);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: 0.42rem 0.85rem;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tab[aria-selected="true"]{
+    color: var(--bg);
+    background: var(--amber);
+  }
+  .tab:not([aria-selected="true"]):hover{
+    color: var(--text);
+    border-color: var(--card-border);
+  }
+
+  main{ padding-top: 1.25rem; }
+
+  .panel{ }
+  .panel[hidden]{ display: none; }
+
+  .section-head{
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin-bottom: 0.9rem;
+  }
+  .section-index{
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--amber);
+    letter-spacing: 0.04em;
+  }
+  .section-head h2{
+    font-size: 1.15rem;
+  }
+  .section-sub{
+    color: var(--text-dim);
+    font-size: 0.88rem;
+    margin: 0 0 1.1rem;
+  }
+
+  /* ---------- meal cards ---------- */
+
+  .cards{
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .card{
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.05rem 1.1rem;
+  }
+
+  .card-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .card-name{
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .card-num{
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-faint);
+  }
+  .card-title{
+    font-family: var(--font-display);
+    font-size: 1.02rem;
+    font-weight: 600;
+  }
+
+  .card-kcal{
+    font-family: var(--font-mono);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--amber);
+    white-space: nowrap;
+  }
+  .card-kcal small{
+    font-size: 0.62rem;
+    font-weight: 500;
+    color: var(--text-faint);
+    margin-left: 0.15rem;
+  }
+
+  .macrobar{
+    display: flex;
+    height: 6px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--bg-elev);
+    margin-bottom: 0.55rem;
+  }
+  .macrobar span{ display:block; height: 100%; }
+  .seg-p{ background: var(--amber); }
+  .seg-c{ background: var(--slate); }
+  .seg-g{ background: var(--rust); }
+
+  .macro-row{
+    display: flex;
+    gap: 0.95rem;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--text-dim);
+    margin-bottom: 0.85rem;
+  }
+  .macro-row .dot{
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    margin-right: 0.3rem;
+    vertical-align: middle;
+  }
+  .dot-p{ background: var(--amber); }
+  .dot-c{ background: var(--slate); }
+  .dot-g{ background: var(--rust); }
+
+  table.ingredients{
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  table.ingredients td{
+    padding: 0.3rem 0;
+    border-top: 1px solid var(--card-border-soft);
+  }
+  table.ingredients tr:first-child td{ border-top: none; }
+  table.ingredients td:first-child{ color: var(--text); }
+  table.ingredients td:last-child{
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .card-note{
+    margin: 0.7rem 0 0;
+    font-size: 0.82rem;
+    color: var(--text-faint);
+    line-height: 1.5;
+  }
+
+  .group-note{
+    background: var(--bg-elev);
+    border: 1px solid var(--card-border-soft);
+    border-radius: var(--radius-md);
+    padding: 0.7rem 0.9rem;
+    font-size: 0.84rem;
+    color: var(--text-dim);
+    margin-top: 0.85rem;
+  }
+  .group-note b{ color: var(--text); }
+
+  /* ---------- random day ---------- */
+
+  .roll-box{
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 1.3rem 1.1rem;
+    text-align: center;
+    margin-bottom: 1.1rem;
+  }
+  .roll-box p{
+    margin: 0 0 1rem;
+    color: var(--text-dim);
+    font-size: 0.88rem;
+  }
+
+  .roll-btn{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.03em;
+    color: var(--bg);
+    background: var(--amber);
+    border: none;
+    border-radius: 999px;
+    padding: 0.85rem 1.8rem;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .roll-btn:hover{ background: var(--focus); }
+  .roll-btn:active{ transform: translateY(1px); }
+
+  .restriction-note{
+    margin-top: 0.85rem;
+    font-size: 0.74rem;
+    color: var(--text-faint);
+  }
+
+  .totals{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    background: var(--bg-elev);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 0.9rem 0.6rem;
+    margin-bottom: 1.1rem;
+  }
+  .totals[hidden]{ display: none; }
+  .total-cell{ text-align: center; }
+  .total-value{
+    font-family: var(--font-mono);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--amber);
+    display: block;
+  }
+  .total-cell:nth-child(2) .total-value{ color: var(--amber); }
+  .total-cell:nth-child(3) .total-value{ color: var(--slate); }
+  .total-cell:nth-child(4) .total-value{ color: var(--rust); }
+  .total-label{
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-faint);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .roll-result[hidden]{ display: none; }
+
+  .roll-meal-label{
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-faint);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 0.4rem;
+  }
+
+  .empty-hint{
+    color: var(--text-faint);
+    font-size: 0.86rem;
+    text-align: center;
+    padding: 0.5rem 0 1rem;
+  }
+
+  /* ---------- schedule tables ---------- */
+
+  .sched{
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .sched caption{
+    text-align: left;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+  .sched td{
+    padding: 0.5rem 0.1rem;
+    border-top: 1px solid var(--card-border-soft);
+  }
+  .sched tr:first-child td{ border-top: none; }
+  .sched td:first-child{
+    font-family: var(--font-mono);
+    color: var(--amber);
+    white-space: nowrap;
+    width: 4.5em;
+  }
+
+  .table-wrap{
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.1rem;
+    margin-bottom: 0.9rem;
+  }
+
+  /* ---------- exchange tables ---------- */
+
+  .exch-table{
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  .exch-table th{
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    font-weight: 500;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .exch-table td{
+    padding: 0.4rem 0;
+    border-top: 1px solid var(--card-border-soft);
+  }
+  .exch-table td:not(:first-child), .exch-table th:not(:first-child){
+    text-align: right;
+    font-family: var(--font-mono);
+    color: var(--text-dim);
+  }
+  .exch-table th:not(:first-child){ color: var(--text-faint); }
+
+  /* ---------- rules list ---------- */
+
+  ul.rules{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  ul.rules li{
+    position: relative;
+    padding: 0.55rem 0 0.55rem 1.15rem;
+    border-top: 1px solid var(--card-border-soft);
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.55;
+  }
+  ul.rules li:first-child{ border-top: none; }
+  ul.rules li::before{
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1.05rem;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--amber);
+  }
+  ul.rules li b{ color: var(--text); font-weight: 600; }
+
+  .notice{
+    font-size: 0.78rem;
+    color: var(--text-faint);
+    line-height: 1.6;
+    margin-top: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--card-border-soft);
+  }
+
+  h3.subhead{
+    font-size: 0.95rem;
+    margin: 1.4rem 0 0.6rem;
+    color: var(--text);
+  }
+  h3.subhead:first-child{ margin-top: 0; }
+
+  footer.legal{
+    max-width: var(--maxw);
+    margin: 2rem auto 0;
+    padding: 0 1rem;
+    color: var(--text-faint);
+    font-size: 0.72rem;
+  }
+
+  @media (min-width: 640px){
+    .cards{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span class="brand-name">Plan nutricional</span>
+    </div>
+    <div class="target-readout">
+      <b>1950</b> kcal · <b>~155</b> g prot<br>12:00–21:15 · sin desayuno
+    </div>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Secciones">
+    <button class="tab" role="tab" id="tab-random" aria-controls="panel-random" aria-selected="true" data-tab="random">Día al azar</button>
+    <button class="tab" role="tab" id="tab-almuerzo" aria-controls="panel-almuerzo" aria-selected="false" tabindex="-1" data-tab="almuerzo">Almuerzo</button>
+    <button class="tab" role="tab" id="tab-merienda" aria-controls="panel-merienda" aria-selected="false" tabindex="-1" data-tab="merienda">Merienda</button>
+    <button class="tab" role="tab" id="tab-cena" aria-controls="panel-cena" aria-selected="false" tabindex="-1" data-tab="cena">Cena</button>
+    <button class="tab" role="tab" id="tab-intercambios" aria-controls="panel-intercambios" aria-selected="false" tabindex="-1" data-tab="intercambios">Intercambios</button>
+    <button class="tab" role="tab" id="tab-uso" aria-controls="panel-uso" aria-selected="false" tabindex="-1" data-tab="uso">Cómo usarlo</button>
+  </nav>
+</header>
+
+<main class="shell">
+
+  <!-- DÍA AL AZAR -->
+  <section class="panel" id="panel-random" role="tabpanel" aria-labelledby="tab-random" tabindex="0">
+    <div class="section-head">
+      <span class="section-index mono">01</span>
+      <h2>Día al azar</h2>
+    </div>
+
+    <div class="roll-box">
+      <p>Arma un almuerzo, una merienda y una cena.</p>
+      <button class="roll-btn" id="roll-btn" type="button">Generar día</button>
+      <p class="restriction-note">Evita automáticamente combinar el chaufa de pavita con las hamburguesas de pavita el mismo día.</p>
+    </div>
+
+    <div class="totals" id="totals" hidden>
+      <div class="total-cell"><span class="total-value mono" id="tot-kcal">–</span><span class="total-label">kcal</span></div>
+      <div class="total-cell"><span class="total-value mono" id="tot-p">–</span><span class="total-label">prot</span></div>
+      <div class="total-cell"><span class="total-value mono" id="tot-c">–</span><span class="total-label">carb</span></div>
+      <div class="total-cell"><span class="total-value mono" id="tot-g">–</span><span class="total-label">grasa</span></div>
+    </div>
+
+    <div class="roll-result" id="roll-result" hidden>
+      <p class="roll-meal-label">Almuerzo</p>
+      <div class="cards" id="roll-almuerzo"></div>
+      <p class="roll-meal-label" style="margin-top:0.85rem">Merienda</p>
+      <div class="cards" id="roll-merienda"></div>
+      <p class="roll-meal-label" style="margin-top:0.85rem">Cena</p>
+      <div class="cards" id="roll-cena"></div>
+    </div>
+
+    <p class="empty-hint" id="empty-hint">Todavía no se generó ningún día.</p>
+  </section>
+
+  <!-- ALMUERZO -->
+  <section class="panel" id="panel-almuerzo" role="tabpanel" aria-labelledby="tab-almuerzo" tabindex="0" hidden>
+    <div class="section-head">
+      <span class="section-index mono">02</span>
+      <h2>Almuerzo</h2>
+    </div>
+    <p class="section-sub">6 opciones. Carnes en crudo, el resto en cocido · equivalente crudo donde aplica.</p>
+    <div class="cards" id="list-almuerzo"></div>
+  </section>
+
+  <!-- MERIENDA -->
+  <section class="panel" id="panel-merienda" role="tabpanel" aria-labelledby="tab-merienda" tabindex="0" hidden>
+    <div class="section-head">
+      <span class="section-index mono">03</span>
+      <h2>Merienda</h2>
+    </div>
+    <p class="section-sub">4 opciones. Equivalente crudo donde aplica.</p>
+    <div class="cards" id="list-merienda"></div>
+    <div class="group-note"><b>Días de box:</b> quitar el maní, las nueces o la palta de la merienda y subir 80 g al carbohidrato. Grasa alta una hora antes de la clase cae mal.</div>
+  </section>
+
+  <!-- CENA -->
+  <section class="panel" id="panel-cena" role="tabpanel" aria-labelledby="tab-cena" tabindex="0" hidden>
+    <div class="section-head">
+      <span class="section-index mono">04</span>
+      <h2>Cena</h2>
+    </div>
+    <p class="section-sub">3 opciones. Equivalente crudo donde aplica.</p>
+    <div class="cards" id="list-cena"></div>
+  </section>
+
+  <!-- INTERCAMBIOS -->
+  <section class="panel" id="panel-intercambios" role="tabpanel" aria-labelledby="tab-intercambios" tabindex="0" hidden>
+    <div class="section-head">
+      <span class="section-index mono">05</span>
+      <h2>Intercambios</h2>
+    </div>
+    <p class="section-sub">Escala proporcionalmente: si el menú pide 250 g de pollo, es 2½ veces cada fila.</p>
+
+    <div class="table-wrap">
+      <h3 class="subhead">100 g de pollo crudo se reemplaza con</h3>
+      <p class="card-note" style="margin:0 0 0.7rem">100 g de pollo crudo equivalen a unos 21 g de proteína.</p>
+      <table class="exch-table">
+        <thead><tr><th>Alimento</th><th>Cantidad</th><th>Proteína</th></tr></thead>
+        <tbody>
+          <tr><td>Res, pulpa</td><td>100 g crudo</td><td>21 g</td></tr>
+          <tr><td>Atún en agua</td><td>100 g escurrido</td><td>21 g</td></tr>
+          <tr><td>Pavita molida</td><td>105 g crudo</td><td>21 g</td></tr>
+          <tr><td>Carne molida de res</td><td>105 g crudo</td><td>20 g</td></tr>
+          <tr><td>Pescado blanco</td><td>110 g crudo</td><td>21 g</td></tr>
+          <tr><td>Huevos enteros</td><td>175 g · 3½ und</td><td>23 g</td></tr>
+          <tr><td>Claras de huevo</td><td>190 g · 6 und</td><td>21 g</td></tr>
+          <tr><td>Yogurt griego</td><td>210 g</td><td>21 g</td></tr>
+          <tr><td>Whey isolate</td><td>25 g</td><td>21 g</td></tr>
+        </tbody>
+      </table>
+      <p class="card-note">Pavita, molida de res y huevos enteros traen bastante más grasa que el pollo. Si se usan, quitar el aceite, la palta o el maní de esa comida.</p>
+      <p class="card-note"><b>Para sustituciones parciales</b> (agregar o quitar menos que la fila completa), en gramos de proteína por unidad práctica: 1 huevo entero (50 g) ≈ 6 g · 1 clara (33 g) ≈ 3.5 g · 1 lata de atún (120 g) ≈ 25 g · 1 scoop de whey (30 g) ≈ 25 g · pavita, res o pescado ≈ 20 g cada 100 g crudos · yogurt griego ≈ 10 g cada 100 g. Un swap se resuelve en un paso: proteína que agregas ÷ proteína por unidad del alimento que vas a quitar. Ejemplo: agregar 2 huevos (≈12 g de proteína) a un chaufa de pavita → quitar unos 60 g de pavita (12 ÷ 20 × 100).</p>
+    </div>
+
+    <div class="table-wrap">
+      <h3 class="subhead">100 g de arroz cocido se reemplaza con</h3>
+      <p class="card-note" style="margin:0 0 0.7rem">100 g de arroz cocido equivalen a unos 33 g de arroz crudo.</p>
+      <table class="exch-table">
+        <thead><tr><th>Alimento</th><th>Cantidad (cocido)</th><th>Crudo</th></tr></thead>
+        <tbody>
+          <tr><td>Fideos</td><td>100 g cocidos</td><td>40 g</td></tr>
+          <tr><td>Pan Unión de avena</td><td>55 g</td><td>—</td></tr>
+          <tr><td>Rapiditas Bimbo</td><td>55 g</td><td>—</td></tr>
+          <tr><td>Garbanzos</td><td>105 g cocidos</td><td>42 g</td></tr>
+          <tr><td>Plátano</td><td>120 g pelado</td><td>—</td></tr>
+          <tr><td>Quinua</td><td>135 g cocida</td><td>45 g</td></tr>
+          <tr><td>Papa</td><td>140 g cocida</td><td>155 g</td></tr>
+          <tr><td>Camote</td><td>140 g cocido</td><td>155 g</td></tr>
+          <tr><td>Lentejas</td><td>140 g cocidas</td><td>56 g</td></tr>
+          <tr><td>Avena</td><td>190 g cocida</td><td>42 g</td></tr>
+          <tr><td>Arvejas</td><td>200 g cocidas</td><td>80 g</td></tr>
+        </tbody>
+      </table>
+      <p class="card-note">El equivalente crudo es una aproximación adicional, no un dato de la tabla de composición original: arroz y quinua triplican su peso al cocer (×3), las legumbres secas —garbanzos, lentejas, arvejas secas— casi lo hacen (×2.5), y la avena sigue la proporción de la merienda de mazamorra (55 g crudo → 250 g cocido). Papa y camote asumen sancochado, con una pérdida de peso baja (~10%); al horno pierden más agua, así que hace falta algo más de crudo para llegar al mismo peso cocido. Pan, rapiditas y plátano no tienen estado crudo — se usan tal cual se compran.</p>
+    </div>
+
+    <div class="table-wrap">
+      <h3 class="subhead">10 g de aceite de oliva se reemplaza con</h3>
+      <table class="exch-table">
+        <thead><tr><th>Alimento</th><th>Cantidad</th></tr></thead>
+        <tbody>
+          <tr><td>Nueces</td><td>15 g</td></tr>
+          <tr><td>Mantequilla de maní</td><td>20 g</td></tr>
+          <tr><td>Almendras</td><td>20 g</td></tr>
+          <tr><td>Linaza molida</td><td>24 g</td></tr>
+          <tr><td>Palta</td><td>70 g</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-wrap">
+      <h3 class="subhead">Carne por legumbre</h3>
+      <table class="exch-table">
+        <thead><tr><th>Para quitar 100 g de pollo</th><th>Agregas (cocido)</th><th>Crudo</th><th>Y quitas</th></tr></thead>
+        <tbody>
+          <tr><td>Lentejas</td><td>230 g cocidas</td><td>92 g</td><td>165 g arroz</td></tr>
+          <tr><td>Garbanzos</td><td>235 g cocidos</td><td>94 g</td><td>230 g arroz</td></tr>
+          <tr><td>Arvejas</td><td>420 g cocidas</td><td>168 g</td><td>210 g arroz</td></tr>
+        </tbody>
+      </table>
+      <p class="card-note">Las legumbres traen proteína y carbohidrato juntos, así que reemplazan carne solo si se quita carbohidrato en la misma comida.</p>
+    </div>
+  </section>
+
+  <!-- CÓMO USARLO -->
+  <section class="panel" id="panel-uso" role="tabpanel" aria-labelledby="tab-uso" tabindex="0" hidden>
+    <div class="section-head">
+      <span class="section-index mono">06</span>
+      <h2>Cómo usarlo</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table class="sched">
+        <caption>Días de pesas — lunes, jueves, viernes</caption>
+        <tbody>
+          <tr><td>12:30</td><td>Almuerzo</td></tr>
+          <tr><td>16:00</td><td>Merienda (90 min antes de entrenar)</td></tr>
+          <tr><td>20:00</td><td>Cena</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-wrap">
+      <table class="sched">
+        <caption>Días de box — martes, sábado</caption>
+        <tbody>
+          <tr><td>12:30</td><td>Almuerzo</td></tr>
+          <tr><td>17:45</td><td>Merienda</td></tr>
+          <tr><td>20:15</td><td>Batido de whey al salir de la clase (~150 kcal, 25 g proteína)</td></tr>
+          <tr><td>21:15</td><td>Cena</td></tr>
+        </tbody>
+      </table>
+      <p class="card-note">Los días de descanso (miércoles, domingo) usan la plantilla de pesas.</p>
+    </div>
+
+    <h3 class="subhead">Reglas de uso</h3>
+    <ul class="rules">
+      <li>Los menús son el default. Los intercambios son la salida cuando falta un ingrediente o hay que comer fuera.</li>
+      <li><b>Comida libre: una por semana, elegida antes de que llegue.</b> Ese día conviene el almuerzo de lentejas y la merienda de rapiditas sin palta.</li>
+      <li>Verduras sin almidón, café sin azúcar, infusiones y agua: libres y sin contar. Meta de 3 litros de líquido al día.</li>
+      <li>Primeras dos semanas: pesar arroz, papa, camote, pollo y aceite. Contar el aceite de cocina — una cucharada son 120 kcal.</li>
+      <li>Peso en ayunas 3–4 veces por semana, mirando el promedio semanal, nunca el dato de un día.</li>
+    </ul>
+
+    <p class="notice">Los valores son estimaciones de tablas de composición estándar y varían ±10% según marca y corte. La pavita molida es la más variable: si el empaque trae información nutricional, esa manda. Este plan no sustituye la evaluación de un nutricionista colegiado.</p>
+  </section>
+
+</main>
+
+<footer class="legal">Uso personal · sin seguimiento, sin analítica.</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var MEALS = {
+    almuerzo: [
+      { name:"Pollo a la plancha", kcal:810, p:63, c:90, g:19,
+        items:[["Pollo, pechuga","250 g crudo"],["Arroz","300 g cocido · 100 g crudo"],["Palta","70 g"],["Ensalada de 2 colores","libre"]],
+        note:"A la plancha con aceite en spray. El arroz puede ser blanco o integral, da igual para los números." },
+      { name:"Lomo saltado ligero", kcal:815, p:60, c:90, g:24,
+        items:[["Res, pulpa","240 g crudo"],["Papa al horno","200 g cocida · 244 g cruda"],["Arroz","150 g cocido · 50 g crudo"],["Aceite de oliva","10 g"],["Cebolla, tomate, ají","libre"]],
+        note:"La papa al horno en bastones en vez de frita es el único cambio respecto al original. El equivalente crudo de la papa asume horno, no sancochado — pierde más agua (ver Intercambios)." },
+      { name:"Chaufa de pavita", kcal:800, p:60, c:90, g:22,
+        items:[["Pavita molida","250 g crudo"],["Arroz","300 g cocido · 100 g crudo"],["Cebolla china, pimiento, kion","libre"],["Sillao","al gusto"]],
+        note:"Sin aceite: la pavita molida ya trae unos 22 g de grasa." },
+      { name:"Lentejas con pollo", kcal:750, p:59, c:82, g:16,
+        items:[["Lentejas","400 g cocidas · 160 g crudas"],["Pollo, pechuga","125 g crudo"],["Palta","70 g"],["Ensalada de 2 colores","libre"]],
+        note:"Las lentejas aportan 30 g de proteína por sí solas, por eso lleva la mitad de pollo. La más barata y la que mejor aguanta 2–3 días en refrigeradora." },
+      { name:"Arroz con arvejas y pollo", kcal:770, p:57, c:102, g:12,
+        items:[["Arvejas","400 g cocidas · 160 g crudas"],["Arroz","150 g cocido · 50 g crudo"],["Pollo, pechuga","150 g crudo"],["Aceite de oliva","5 g"],["Ensalada de 2 colores","libre"]],
+        note:"Estilo guiso o arroz tapado. Es el plato de mayor volumen del grupo." },
+      { name:"Guiso de garbanzos con res", kcal:780, p:60, c:85, g:18,
+        items:[["Garbanzos","300 g cocidos · 120 g crudos"],["Res, pulpa","150 g crudo"],["Aceite de oliva","5 g"],["Cebolla, tomate, ají panca","libre"],["Ensalada de 2 colores","libre"]],
+        note:"Sin arroz: los garbanzos cubren todo el carbohidrato. Rinde para 2 días." }
+    ],
+    merienda: [
+      { name:"Mazamorra de avena", kcal:495, p:39, c:57, g:13,
+        items:[["Whey isolate","30 g"],["Avena","250 g cocida · 55 g cruda"],["Mantequilla de maní","17 g"],["Fruta","150 g"]],
+        note:"Los 250 g cocidos salen de unos 55 g de avena en hojuelas con agua hirviendo." },
+      { name:"Yogurt con avena y nueces", kcal:515, p:37, c:60, g:14,
+        items:[["Yogurt griego sin azúcar","250 g"],["Avena","250 g cocida · 55 g cruda"],["Nueces","15 g"],["Arándanos u otra fruta","100 g"]],
+        note:"Se deja armada la noche anterior." },
+      { name:"Rapiditas con pollo", kcal:450, p:33, c:42, g:15,
+        items:[["Pollo deshilachado","125 g crudo"],["Rapiditas Bimbo","80 g (2 und)"],["Palta","50 g"],["Tomate, lechuga","libre"]],
+        note:"Opción salada y portátil." },
+      { name:"Sándwich de huevo", kcal:455, p:29, c:47, g:16,
+        items:[["Huevos enteros","100 g · 2 und"],["Claras de huevo","100 g · 3 und"],["Pan Unión de avena","55 g"],["Palta","30 g"],["Fruta","150 g"]],
+        note:"La merienda con menos proteína del grupo. Si el almuerzo fue de legumbres, conviene usar la 1 o la 2." }
+    ],
+    cena: [
+      { name:"Atún con papa", kcal:620, p:61, c:84, g:7,
+        items:[["Atún en agua, escurrido","240 g (2 latas)"],["Papa","400 g cocida · 444 g cruda"],["Aceite de oliva","5 g"],["Ensalada grande","libre"]],
+        note:"La más liviana y la de mayor volumen. Si 400 g de papa pesan mucho a las 9 pm, cambiar por 300 g de arroz. El equivalente crudo asume papa sancochada, no al horno." },
+      { name:"Salteado de pollo", kcal:720, p:62, c:90, g:11,
+        items:[["Pollo, pechuga en trozos","250 g crudo"],["Arroz","300 g cocido · 100 g crudo"],["Aceite de oliva","5 g"],["Cebolla, tomate, pimiento","libre"]],
+        note:"Se hace en 12 minutos." },
+      { name:"Hamburguesas de pavita con camote", kcal:790, p:58, c:84, g:22,
+        items:[["Pavita molida","250 g crudo"],["Camote al horno","400 g cocido · 488 g crudo"],["Ensalada de 2 colores","libre"]],
+        note:"Dos hamburguesas de 125 g, armadas crudas y guardadas en refrigeradora. Se cocinan sin aceite. El equivalente crudo del camote asume horno — pierde más agua que sancochado (ver Intercambios)." }
+    ]
+  };
+
+  // índices restringidos: almuerzo 2 (chaufa de pavita) no puede ir con cena 2 (hamburguesas de pavita)
+  var RESTRICTED_ALMUERZO = 2;
+  var RESTRICTED_CENA = 2;
+
+  function macroCard(meal, num){
+    var pCal = meal.p * 4, cCal = meal.c * 4, gCal = meal.g * 9;
+    var totalCal = pCal + cCal + gCal;
+    var pPct = (pCal/totalCal*100).toFixed(1);
+    var cPct = (cCal/totalCal*100).toFixed(1);
+    var gPct = (gCal/totalCal*100).toFixed(1);
+
+    var itemsHtml = meal.items.map(function(row){
+      return '<tr><td>' + escapeHtml(row[0]) + '</td><td>' + escapeHtml(row[1]) + '</td></tr>';
+    }).join('');
+
+    return (
+      '<article class="card">' +
+        '<div class="card-top">' +
+          '<div class="card-name">' +
+            (num != null ? '<span class="card-num mono">' + String(num).padStart(2,'0') + '</span>' : '') +
+            '<h3 class="card-title">' + escapeHtml(meal.name) + '</h3>' +
+          '</div>' +
+          '<div class="card-kcal">' + meal.kcal + '<small>kcal</small></div>' +
+        '</div>' +
+        '<div class="macrobar" role="img" aria-label="Proteína ' + pPct + '%, carbohidrato ' + cPct + '%, grasa ' + gPct + '%">' +
+          '<span class="seg-p" style="width:' + pPct + '%"></span>' +
+          '<span class="seg-c" style="width:' + cPct + '%"></span>' +
+          '<span class="seg-g" style="width:' + gPct + '%"></span>' +
+        '</div>' +
+        '<div class="macro-row">' +
+          '<span><span class="dot dot-p"></span>P ' + meal.p + ' g</span>' +
+          '<span><span class="dot dot-c"></span>C ' + meal.c + ' g</span>' +
+          '<span><span class="dot dot-g"></span>G ' + meal.g + ' g</span>' +
+        '</div>' +
+        '<table class="ingredients"><tbody>' + itemsHtml + '</tbody></table>' +
+        (meal.note ? '<p class="card-note">' + escapeHtml(meal.note) + '</p>' : '') +
+      '</article>'
+    );
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function renderList(category, containerId){
+    var el = document.getElementById(containerId);
+    el.innerHTML = MEALS[category].map(function(meal, i){
+      return macroCard(meal, i+1);
+    }).join('');
+  }
+
+  renderList('almuerzo', 'list-almuerzo');
+  renderList('merienda', 'list-merienda');
+  renderList('cena', 'list-cena');
+
+  /* ---------- día al azar ---------- */
+
+  function randInt(n){ return Math.floor(Math.random() * n); }
+
+  function rollDay(){
+    var almuerzoIdx = randInt(MEALS.almuerzo.length);
+    var cenaIdx;
+    do {
+      cenaIdx = randInt(MEALS.cena.length);
+    } while (almuerzoIdx === RESTRICTED_ALMUERZO && cenaIdx === RESTRICTED_CENA);
+    var meriendaIdx = randInt(MEALS.merienda.length);
+
+    var almuerzo = MEALS.almuerzo[almuerzoIdx];
+    var merienda = MEALS.merienda[meriendaIdx];
+    var cena = MEALS.cena[cenaIdx];
+
+    document.getElementById('roll-almuerzo').innerHTML = macroCard(almuerzo, null);
+    document.getElementById('roll-merienda').innerHTML = macroCard(merienda, null);
+    document.getElementById('roll-cena').innerHTML = macroCard(cena, null);
+
+    var kcal = almuerzo.kcal + merienda.kcal + cena.kcal;
+    var p = almuerzo.p + merienda.p + cena.p;
+    var c = almuerzo.c + merienda.c + cena.c;
+    var g = almuerzo.g + merienda.g + cena.g;
+
+    document.getElementById('tot-kcal').textContent = kcal;
+    document.getElementById('tot-p').textContent = p + 'g';
+    document.getElementById('tot-c').textContent = c + 'g';
+    document.getElementById('tot-g').textContent = g + 'g';
+
+    document.getElementById('totals').hidden = false;
+    document.getElementById('roll-result').hidden = false;
+    document.getElementById('empty-hint').hidden = true;
+  }
+
+  document.getElementById('roll-btn').addEventListener('click', rollDay);
+
+  /* ---------- tabs ---------- */
+
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+
+  function activateTab(id, opts){
+    opts = opts || {};
+    tabs.forEach(function(tab){
+      var selected = tab.dataset.tab === id;
+      tab.setAttribute('aria-selected', selected ? 'true' : 'false');
+      tab.tabIndex = selected ? 0 : -1;
+      var panel = document.getElementById('panel-' + tab.dataset.tab);
+      if (panel) panel.hidden = !selected;
+    });
+    if (opts.updateHash !== false){
+      history.replaceState(null, '', '#' + id);
+    }
+    if (opts.focus){
+      var activeTab = tabs.find(function(t){ return t.dataset.tab === id; });
+      if (activeTab) activeTab.focus();
+    }
+  }
+
+  tabs.forEach(function(tab, i){
+    tab.addEventListener('click', function(){
+      activateTab(tab.dataset.tab);
+    });
+    tab.addEventListener('keydown', function(e){
+      var newIndex = null;
+      if (e.key === 'ArrowRight') newIndex = (i + 1) % tabs.length;
+      else if (e.key === 'ArrowLeft') newIndex = (i - 1 + tabs.length) % tabs.length;
+      else if (e.key === 'Home') newIndex = 0;
+      else if (e.key === 'End') newIndex = tabs.length - 1;
+      if (newIndex !== null){
+        e.preventDefault();
+        activateTab(tabs[newIndex].dataset.tab, { focus: true });
+      }
+    });
+  });
+
+  var initial = (location.hash || '').replace('#', '');
+  var validIds = tabs.map(function(t){ return t.dataset.tab; });
+  if (validIds.indexOf(initial) !== -1){
+    activateTab(initial, { updateHash: false });
+  }
+
+  window.addEventListener('hashchange', function(){
+    var id = (location.hash || '').replace('#', '');
+    if (validIds.indexOf(id) !== -1) activateTab(id, { updateHash: false });
+  });
+
+})();
+</script>
+
+</body>
+</html>
